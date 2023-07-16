@@ -1,1 +1,3 @@
-print('hi')
+from settings import ICF_USERNAME, ICF_PASSWORD
+
+print(ICF_USERNAME, ICF_PASSWORD)
