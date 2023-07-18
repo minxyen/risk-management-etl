@@ -31,9 +31,23 @@ response = requests.post(
 print(response)
 data = response.json()
 
+temp_list = []
 for i in data['data']:
-    print(i)
+    row_values = [
+        i.get('1021', {}).get('value', None),  # Disaster PW
+        i.get('229', {}).get('value', None),   # Disaster
+        i.get('242', {}).get('value', None),   # FEMA PW
+        i.get('243', {}).get('value', None),   # ORM Ref
+        i.get('3', {}).get('value', None),     # Record ID
+        i.get('679', {}).get('value', None)    # FEMA Ref
+    ]
+    # Uncomment the following lines if you want to check for missing values
+    # if None in row_values:
+    #     print("Missing value warning!")
+    temp_list.append(row_values)
 
+df = pd.DataFrame(temp_list, columns=['Disaster PW', 'Disaster', 'FEMA PW', 'ORM Ref', 'Record ID#', 'FEMA Ref'])
+print(df)
 
 # '1021': Disaster PW
 # '229': Disaster
