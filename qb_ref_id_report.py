@@ -47,8 +47,8 @@ for i in data['data']:
     temp_list.append(row_values)
 
 df = pd.DataFrame(temp_list, columns=['Disaster PW', 'Disaster', 'FEMA PW', 'ORM Ref', 'Record ID#', 'FEMA Ref'])
-df.to_csv('record_id_report.csv', index=False)
-print(df)
+# df.to_csv('record_id_report.csv', index=False)
+# print(df)
 
 # '1021': Disaster PW
 # '229': Disaster

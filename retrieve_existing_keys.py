@@ -35,5 +35,5 @@ for i in data['data']:
 # may need to check if there are any duplicates (protection)
 print(existing_key_list)
 
-# df = pd.DataFrame(existing_key_list, columns=['Damage No.'])
-# df.to_csv('exiting_key_list.csv', index=False)
+df = pd.DataFrame(existing_key_list, columns=['Damage No.'])
+df.to_csv('existing_key_list.csv', index=False)
