@@ -22,7 +22,7 @@ damages['Project #'] = damages['Project #'].fillna("").astype(str).str.replace('
 
 
 record_id_report = pd.read_csv('record_id_report.csv')
-print(record_id_report)
+# print(record_id_report)
 
 project_lookup = record_id_report[['FEMA Ref', 'Record ID#']]
 project_lookup = project_lookup.rename(columns={'FEMA Ref':'Project #',
@@ -35,3 +35,4 @@ merged_df['Related Project ID'] = merged_df['Related Project ID'].fillna("").ast
 merged_df = merged_df.drop(columns=['Event'])
 # merged_df.loc[merged_df['Project #'] == '', 'Related Project ID'] = ''
 print(merged_df)
+merged_df.to_csv('merged_df.csv', index=False)

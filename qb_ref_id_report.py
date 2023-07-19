@@ -28,7 +28,7 @@ response = requests.post(
         headers = headers
     )
 
-print(response)
+# print(response)
 data = response.json()
 
 temp_list = []
