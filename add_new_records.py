@@ -15,7 +15,30 @@ url = f'{base_url}/v1/records'
 df = pd.read_csv('merged_df.csv')
 df = df.fillna("")
 
+df['Approx. Cost'] = df['Approx. Cost'].apply(lambda x: x.replace("$","").replace(",",""))
+df['CRC Gross Cost'] = df['CRC Gross Cost'].apply(lambda x: x.replace("$","").replace(",",""))
+df['Federal Share'] = df['Federal Share'].apply(lambda x: x.replace("$","").replace(",",""))
+df['Non-Federal Share'] = df['Non-Federal Share'].apply(lambda x: x.replace("$","").replace(",",""))
+
+def percentage_to_decimal(percentage_str):
+    if pd.isna(percentage_str) or percentage_str == '':
+        return ''
+    return str(float(percentage_str.strip('%')) / 100)
+df['% Work Complete'] = df['% Work Complete'].apply(percentage_to_decimal)
+
+# Dictionary to map values to their corresponding boolean values
+mapping = {'Yes': True, 'No': False}
+df['Imported DDD?'] = [mapping.get(value, None) for value in df['Imported DDD?']]
+
+
+df['Date Inspected'] = pd.to_datetime(df['Date Inspected'], format='%m/%d/%Y %I:%M %p', errors='coerce')
+df['Date Inspected'] = df['Date Inspected'].dt.strftime('%Y-%m-%d').fillna('')
+
+df['Date SI Report Approved'] = pd.to_datetime(df['Date SI Report Approved'], format='%m/%d/%Y %I:%M %p', errors='coerce')
+df['Date SI Report Approved'] = df['Date SI Report Approved'].dt.strftime('%Y-%m-%d').fillna('')
+
 print(df)
+df = df.head()
 
 for index, row in df.iterrows():
     # print(row)
@@ -35,7 +58,7 @@ for index, row in df.iterrows():
     work_order_no = row['Work Order #']
     date_inspected = row['Date Inspected']
     date_si_report_approved = row['Date SI Report Approved']
-    perc_work_complete = row['% Work Complete']
+    perc_work_complete = row['% Work Complete']     # need to think about when there is null values.
     imported_ddd = row['Imported DDD?']
     has_406_mitigation = row['Has 406 Mitigation?']
     insured = row['Insured?']
@@ -45,7 +68,7 @@ for index, row in df.iterrows():
     total_insurance_reductions = row['Total Insurance Reductions']
     federal_share = row['Federal Share']
     non_federal_share = row['Non-Federal Share']
-    labor_type = row['Labor Type']
+    labor_type = row['Labor Type']                      # need to deal with field type - text multiple choice restriction.
     has_emp_concerns = row['Has EHP Concerns?']
     mitigation_406_cost_type = row['406 Mitigation Cost Type']
     mitigation_406_cost_effectiveness_type = row['406 Mitigation Cost Effectiveness Type']
@@ -73,18 +96,18 @@ for index, row in df.iterrows():
             "114": {"value": site_inspectors},
             "115": {"value": si_status},
             "116": {"value": work_order_no},
-            "117": {"value": date_inspected},
+            "117": {"value": date_inspected},    # correct format and are valid choices ???
             "118": {"value": date_si_report_approved},
-            "22": {"value": perc_work_complete},  # Incompatible value
+            "22": {"value": perc_work_complete},  # %
             "119": {"value": imported_ddd},
             "80": {"value": has_406_mitigation},
             "37": {"value": insured},
-            "21": {"value": approx_cost},    # Incompatible value
-            "81": {"value": crc_gross_cost},  # Incompatible value
+            "21": {"value": approx_cost},    # currency
+            "81": {"value": crc_gross_cost},  # currency
             "82": {"value": total_406_hmp_cost},
             "83": {"value": total_insurance_reductions},
-            "85": {"value": federal_share},  # Incompatible value
-            "108": {"value": non_federal_share},  # Incompatible value
+            "85": {"value": federal_share},  # currency
+            "108": {"value": non_federal_share},  # currency
             "23": {"value": labor_type},
             "86": {"value": has_emp_concerns},
             "87": {"value": mitigation_406_cost_type},
@@ -112,7 +135,7 @@ for index, row in df.iterrows():
         print('Error:', response.text)
 
 
-    break
+    # break
 
     # Error: {"data": [], "metadata": {"createdRecordIds": [], "lineErrors": {
     #     "1": ["Unknown field with Id \"6\".", "Unknown field with Id \"8\".",
