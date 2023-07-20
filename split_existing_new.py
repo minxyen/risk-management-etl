@@ -14,6 +14,13 @@ existing_data = merged_df[merged_df['Existing']==1]
 new_data = merged_df[merged_df['Existing']==0]
 # new_data.to_csv('new_data.csv', index=False)
 
+for index, row in merged_df.iterrows():
+    print(row)
+
+
+
+
+
 ## Damage No.                     26. Text. Key.
 ## Category                       31. Text - Multiple Choice. (A, B, E, G, F, D, C, Z, N/A)
 ## Name                           8. Text - Multi-line
