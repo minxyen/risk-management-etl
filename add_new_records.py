@@ -17,8 +17,8 @@ df = df.fillna("")
 
 df['Approx. Cost'] = df['Approx. Cost'].apply(lambda x: x.replace("$","").replace(",",""))
 df['CRC Gross Cost'] = df['CRC Gross Cost'].apply(lambda x: x.replace("$","").replace(",",""))
-df['Federal Share'] = df['Federal Share'].apply(lambda x: x.replace("$","").replace(",",""))
-df['Non-Federal Share'] = df['Non-Federal Share'].apply(lambda x: x.replace("$","").replace(",",""))
+df['Federal Share'] = df['Federal Share'].apply(lambda x: x.replace("$","").replace(",","").replace("(","-").replace(")",""))
+df['Non-Federal Share'] = df['Non-Federal Share'].apply(lambda x: x.replace("$","").replace(",","").replace("(","-").replace(")",""))
 
 def percentage_to_decimal(percentage_str):
     if pd.isna(percentage_str) or percentage_str == '':
@@ -37,8 +37,8 @@ df['Date Inspected'] = df['Date Inspected'].dt.strftime('%Y-%m-%d').fillna('')
 df['Date SI Report Approved'] = pd.to_datetime(df['Date SI Report Approved'], format='%m/%d/%Y %I:%M %p', errors='coerce')
 df['Date SI Report Approved'] = df['Date SI Report Approved'].dt.strftime('%Y-%m-%d').fillna('')
 
-print(df)
-df = df.head()
+df = df[df['Federal Share'].str.contains('-')]
+
 
 for index, row in df.iterrows():
     # print(row)
@@ -133,30 +133,25 @@ for index, row in df.iterrows():
         print('Error:', response.status_code)
         print('Error:', response.reason)
         print('Error:', response.text)
+        print('---------------------')
+        # print(payload)
+        print('=====================')
 
 
     # break
 
-    # Error: {"data": [], "metadata": {"createdRecordIds": [], "lineErrors": {
-    #     "1": ["Unknown field with Id \"6\".", "Unknown field with Id \"8\".",
-    #           "Incompatible value for field with ID \"21\".", "Incompatible value for field with ID \"22\".",
-    #           "The field with ID '23' has an invalid choice.", "Incompatible value for field with ID \"81\".",
-    #           "Incompatible value for field with ID \"85\".", "Incompatible value for field with ID \"108\".",
-    #           "Missing value for required field with ID \"26\"."]}, "totalNumberOfRecordsProcessed": 1,
-    #                                  "unchangedRecordIds": [], "updatedRecordIds": []}}
-
 
     ## Damage No.                     26. Text. Key.
-    ## Category                       31. Text - Multiple Choice. (A, B, E, G, F, D, C, Z, N/A)
+    ## Category                       31. Text - Multiple Choice. (A, B, C, D, E, F, G, Z, N/A, '')  -user can not add  -- df[df['Category']=='MCGUIRE, GEORGE P.']
     ## Name                           9. Text - Multi-line
     ## Damage Description             19. Text - Multi-line
     ## Status                         92. Text - Multi-line
-    ## Cause of Damage                34. Text - Multiple Choice (Hurricane, Winter Storm, Tropical Storm, Flood, Tornado, Severe Storm, Wind) - user can add
+    ## Cause of Damage                34. Text - Multiple Choice (Hurricane, Winter Storm, Tropical Storm, Flood, Tornado, Severe Storm, Wind, '') - user can add   --df[df['Cause of Damage']=='8/24/2021 09:52 PM']
     ## Latitude                       17. Text
     ## Longitude                      18. Text
     ## Project #                      33. Numeric
-    ## County                         107. Text - Multiple Choice (East Baton Rouge Parish, Jefferson) - user can add
-    ## Project Process Step           113. Text - Multiple Choice (Obligated, Process Discontinued, Pending Applicant DDD Approval, Pending CRC Project Development, Pending PDMG Project Review, Pending Initial Project Development, Pending DDD Completion, Pending PDMG Scope & Cost Routing, Pending Applicant Project Review, Pending Peer Review, Pending Large Project Review, Pending Formulation Completion, Applicant Signed Project, Pending EHP Review, Pending Insurance Completion, Pending QA Review, Pending Final FEMA Review, Pending FEMA 406 HMP Completion, Pending Applicant 406 HMP Completion, Pending EMMIE Submission) - user can add
+    ## County                         107. Text - Multiple Choice (East Baton Rouge Parish, Jefferson, '') - user can add  -- df[df['County']=='Unanswered']
+    ## Project Process Step           113. Text - Multiple Choice (Obligated, Process Discontinued, Pending Applicant DDD Approval, Pending CRC Project Development, Pending PDMG Project Review, Pending Initial Project Development, Pending DDD Completion, Pending PDMG Scope & Cost Routing, Pending Applicant Project Review, Pending Peer Review, Pending Large Project Review, Pending Formulation Completion, Applicant Signed Project, Pending EHP Review, Pending Insurance Completion, Pending QA Review, Pending Final FEMA Review, Pending FEMA 406 HMP Completion, Pending Applicant 406 HMP Completion, Pending EMMIE Submission, '') - user can add   --df[df['Project Process Step']=='$2,329.19']
     ## Site Inspectors                114. Text
     ## SI Status                      115. Text
     ## Work Order #                   116. Numeric.
@@ -164,7 +159,7 @@ for index, row in df.iterrows():
     ## Date SI Report Approved        118. Date.
     ## % Work Complete                22. Percent.
     ## Imported DDD?                  119. Checkbox.
-    ## Has 406 Mitigation?            80. Text - Multiple Choice (No, Yes) - user can add
+    ## Has 406 Mitigation?            80. Text - Multiple Choice (No, Yes, '') - user can add   --all good here
     ## Insured?                       37. Text.
     ## Approx. Cost                   21. Currency.
     ## CRC Gross Cost                 81. Currency.
@@ -172,11 +167,11 @@ for index, row in df.iterrows():
     ## Total Insurance Reductions     83. Currency.
     ## Federal Share                  85. Currency.
     ## Non-Federal Share              108. Currency.
-    ## Labor Type                     23. Text - Multiple Choice (MAA, MA, MOU, FA, C, FA/C, DR)  - user can not add
-    ## Has EHP Concerns?              86. Text - Multiple Choice (Yes, N/A, No, Unknown) - user can add
-    ## 406 Mitigation Cost Type       87. Text - Multiple Choice (Supplement Repair Cost)
-    ## 406 Mitigation Cost Effectiveness Type    88. Text - Multiple Choice (100% Rule, 15% Rule) - user can add
+    ## Labor Type                     23. Text - Multiple Choice (MAA, MA, MOU, FA, C, FA/C, DR, '')  - user can not add  --all wrong.
+    ## Has EHP Concerns?              86. Text - Multiple Choice (Yes, N/A, No, Unknown, '') - user can add  --all good
+    ## 406 Mitigation Cost Type       87. Text - Multiple Choice (Supplement Repair Cost, '')  - user can add  --all good
+    ## 406 Mitigation Cost Effectiveness Type    88. Text - Multiple Choice (100% Rule, 15% Rule, '') - user can add  --all good
     ## 406 Mitigation BCR             120. Text.
     ## EHP Concerns Observed          90. Text.
-    ## Disaster                       28. Text - Multiple Choice (4570, 1607, 4577, 4590, 4559, 4606, 4611, 4345, 4439, 4458) user can not add
+    ## Disaster                       28. Text - Multiple Choice (4570, 1607, 4577, 4590, 4559, 4606, 4611, 4345, 4439, 4458, '') user can not add  --all good
     ## Related Project ID             Related Project (Record ID#). 6. Numeric.   (139 for test)
