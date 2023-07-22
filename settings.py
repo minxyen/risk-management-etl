@@ -6,7 +6,9 @@ ICF_USERNAME = os.getenv('ICF_USERNAME')
 ICF_PASSWORD = os.getenv('ICF_PASSWORD')
 
 
-SITE_URL = os.getenv('SITE_URL')
+SP_SITE_URL = os.getenv('SP_SITE_URL')
+SP_FOLDER_URL = os.getenv('SP_FOLDER_URL')
+
 WILDCARD_FILENAME = os.getenv('WILDCARD_FILENAME')
 
 LOCAL_DATA_FOLDER = os.getenv('LOCAL_DATA_FOLDER')
