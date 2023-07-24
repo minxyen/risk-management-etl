@@ -30,6 +30,17 @@ df['% Work Complete'] = df['% Work Complete'].apply(percentage_to_decimal)
 mapping = {'Yes': True, 'No': False}
 df['Imported DDD?'] = [mapping.get(value, None) for value in df['Imported DDD?']]
 
+mapping = {'Contract': 'C',
+           'Force Account and Contract': 'FA/C',
+           'Force Account': 'FA',
+           'Donated Resources': 'DR',
+           'Mutual Aid': 'MAA',
+           'Mission Assigned': 'MA',
+           'Memorandum of Understanding': 'MOU'}
+
+df['Labor Type'] = [mapping.get(value, None) for value in df['Labor Type']]
+df['Labor Type']
+
 
 df['Date Inspected'] = pd.to_datetime(df['Date Inspected'], format='%m/%d/%Y %I:%M %p', errors='coerce')
 df['Date Inspected'] = df['Date Inspected'].dt.strftime('%Y-%m-%d').fillna('')
@@ -142,16 +153,16 @@ for index, row in df.iterrows():
 
 
     ## Damage No.                     26. Text. Key.
-    ## Category                       31. Text - Multiple Choice. (A, B, C, D, E, F, G, Z, N/A, '')  -user can not add  -- df[df['Category']=='MCGUIRE, GEORGE P.']
+    ## Category                       31. Text - Multiple Choice. (A, B, C, D, E, F, G, Z, N/A, '')  -user can not add
     ## Name                           9. Text - Multi-line
     ## Damage Description             19. Text - Multi-line
     ## Status                         92. Text - Multi-line
-    ## Cause of Damage                34. Text - Multiple Choice (Hurricane, Winter Storm, Tropical Storm, Flood, Tornado, Severe Storm, Wind, '') - user can add   --df[df['Cause of Damage']=='8/24/2021 09:52 PM']
+    ## Cause of Damage                34. Text - Multiple Choice (Hurricane, Winter Storm, Tropical Storm, Flood, Tornado, Severe Storm, Wind, '') - user can add
     ## Latitude                       17. Text
     ## Longitude                      18. Text
     ## Project #                      33. Numeric
-    ## County                         107. Text - Multiple Choice (East Baton Rouge Parish, Jefferson, '') - user can add  -- df[df['County']=='Unanswered']
-    ## Project Process Step           113. Text - Multiple Choice (Obligated, Process Discontinued, Pending Applicant DDD Approval, Pending CRC Project Development, Pending PDMG Project Review, Pending Initial Project Development, Pending DDD Completion, Pending PDMG Scope & Cost Routing, Pending Applicant Project Review, Pending Peer Review, Pending Large Project Review, Pending Formulation Completion, Applicant Signed Project, Pending EHP Review, Pending Insurance Completion, Pending QA Review, Pending Final FEMA Review, Pending FEMA 406 HMP Completion, Pending Applicant 406 HMP Completion, Pending EMMIE Submission, '') - user can add   --df[df['Project Process Step']=='$2,329.19']
+    ## County                         107. Text - Multiple Choice (East Baton Rouge Parish, Jefferson, '') - user can add
+    ## Project Process Step           113. Text - Multiple Choice (Obligated, Process Discontinued, Pending Applicant DDD Approval, Pending CRC Project Development, Pending PDMG Project Review, Pending Initial Project Development, Pending DDD Completion, Pending PDMG Scope & Cost Routing, Pending Applicant Project Review, Pending Peer Review, Pending Large Project Review, Pending Formulation Completion, Applicant Signed Project, Pending EHP Review, Pending Insurance Completion, Pending QA Review, Pending Final FEMA Review, Pending FEMA 406 HMP Completion, Pending Applicant 406 HMP Completion, Pending EMMIE Submission, '') - user can add
     ## Site Inspectors                114. Text
     ## SI Status                      115. Text
     ## Work Order #                   116. Numeric.
@@ -159,7 +170,7 @@ for index, row in df.iterrows():
     ## Date SI Report Approved        118. Date.
     ## % Work Complete                22. Percent.
     ## Imported DDD?                  119. Checkbox.
-    ## Has 406 Mitigation?            80. Text - Multiple Choice (No, Yes, '') - user can add   --all good here
+    ## Has 406 Mitigation?            80. Text - Multiple Choice (No, Yes, '') - user can add
     ## Insured?                       37. Text.
     ## Approx. Cost                   21. Currency.
     ## CRC Gross Cost                 81. Currency.

@@ -2,8 +2,6 @@ from settings import QB_REALM_HOSTNAME, QB_USER_TOKEN
 import requests
 import pandas as pd
 
-base_url = 'https://api.quickbase.com'
-
 headers = {
     'QB-Realm-Hostname': QB_REALM_HOSTNAME,
     'Authorization': f'QB-USER-TOKEN {QB_USER_TOKEN}'
@@ -17,7 +15,7 @@ TABLE_KEY = [26]
 body = {"from":TABLE_ID,"select": TABLE_KEY}
 
 response = requests.post(
-	f'{base_url}/v1/records/query',
+	'https://api.quickbase.com/v1/records/query',
 	headers = headers,
 	json = body
 )
