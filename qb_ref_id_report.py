@@ -1,8 +1,9 @@
 from settings import QB_REALM_HOSTNAME, QB_USER_TOKEN
 import requests
 import pandas as pd
-import json
-from pprint import pprint
+
+from log import config_logger
+logger = config_logger()
 
 headers = {
     'QB-Realm-Hostname': QB_REALM_HOSTNAME,
@@ -43,7 +44,8 @@ for i in data['data']:
 
 df = pd.DataFrame(temp_list, columns=['Disaster PW', 'Disaster', 'FEMA PW', 'ORM Ref', 'Record ID#', 'FEMA Ref'])
 df.to_csv('record_id_report.csv', index=False)
-print(df)
+# print(df)
+logger.info("[Ok] Downloaded Ref ID Report")
 
 # '1021': Disaster PW
 # '229': Disaster

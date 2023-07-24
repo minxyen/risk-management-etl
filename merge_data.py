@@ -1,5 +1,8 @@
 import pandas as pd
 
+from log import config_logger
+logger = config_logger()
+
 target_file_name = 'Damages Export.csv'  # this will enventually be passed down from previous step.
 
 damages = pd.read_csv(target_file_name)
@@ -34,5 +37,7 @@ merged_df = damages.merge(project_lookup, on='Project #', how='left')
 merged_df['Related Project ID'] = merged_df['Related Project ID'].fillna("").astype(str).str.replace('\.0$', '', regex=True)
 merged_df = merged_df.drop(columns=['Event'])
 # merged_df.loc[merged_df['Project #'] == '', 'Related Project ID'] = ''
-print(merged_df)
+# print(merged_df)
 merged_df.to_csv('merged_df.csv', index=False)
+
+logger.info('[OK] Merged SharePoint Data and Ref ID Report')

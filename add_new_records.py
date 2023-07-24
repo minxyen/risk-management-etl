@@ -1,8 +1,11 @@
 from settings import QB_REALM_HOSTNAME, QB_USER_TOKEN
 import requests
 import pandas as pd
+import json
 
-base_url = 'https://api.quickbase.com'
+
+from log import config_logger
+logger = config_logger()
 
 headers = {
     'QB-Realm-Hostname': QB_REALM_HOSTNAME,
@@ -10,7 +13,7 @@ headers = {
     'Content-Type': 'application/json'
 }
 
-url = f'{base_url}/v1/records'
+url = 'https://api.quickbase.com/v1/records'
 
 df = pd.read_csv('merged_df.csv')
 df = df.fillna("")
@@ -39,7 +42,6 @@ mapping = {'Contract': 'C',
            'Memorandum of Understanding': 'MOU'}
 
 df['Labor Type'] = [mapping.get(value, None) for value in df['Labor Type']]
-df['Labor Type']
 
 
 df['Date Inspected'] = pd.to_datetime(df['Date Inspected'], format='%m/%d/%Y %I:%M %p', errors='coerce')
@@ -47,9 +49,6 @@ df['Date Inspected'] = df['Date Inspected'].dt.strftime('%Y-%m-%d').fillna('')
 
 df['Date SI Report Approved'] = pd.to_datetime(df['Date SI Report Approved'], format='%m/%d/%Y %I:%M %p', errors='coerce')
 df['Date SI Report Approved'] = df['Date SI Report Approved'].dt.strftime('%Y-%m-%d').fillna('')
-
-df = df[df['Federal Share'].str.contains('-')]
-
 
 for index, row in df.iterrows():
     # print(row)
@@ -130,23 +129,31 @@ for index, row in df.iterrows():
             }
         ]
     }
-    print(payload)
+    # print(payload)
+    try:
+        response = requests.post(url, headers=headers, json=payload)
 
-    response = requests.post(url, headers=headers, json=payload)
+        payload = json.dumps(payload, indent=2)
 
-    if response.status_code == 200:
-        data = response.json()
-        print(data)
-        print('---------')
-        # Process the returned data as needed
-    else:
-        print('Error:', response)
-        print('Error:', response.status_code)
-        print('Error:', response.reason)
-        print('Error:', response.text)
-        print('---------------------')
-        # print(payload)
-        print('=====================')
+        if response.status_code == 200:
+            data = response.json()
+            # print(data)
+            # print('---------')
+            # Process the returned data as needed
+        else:
+            logger.info(f'Error: {response}')
+            logger.info(f'Error: {response.status_code}')
+            logger.info(f'Error: {response.reason}')
+            logger.info(f'Error: {response.text}')
+            logger.info(f'Payload: {payload}')
+            data = response.json()
+            logger.info(data)
+            logger.info('---------------------')
+    except Exception as e:
+        logger.info(e)
+            # print(payload)
+
+    logger.info('[OK] Data Import Finished!!')
 
 
     # break
