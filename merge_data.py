@@ -1,22 +1,23 @@
 import pandas as pd
-
 from log import config_logger
+
 logger = config_logger()
 
 target_file_name = 'Damages Export.csv'  # this will enventually be passed down from previous step.
 
+
+# Read and select columns from the input CSV. # no Address, Project Title, Policy Issues.
 damages = pd.read_csv(target_file_name)
-# no Address, Project Title, Policy Issues
 damages = damages[['Damage #', 'Category', 'Name', 'Damage Description', 'Status',
-       'Cause of Damage', 'Latitude', 'Longitude', 'Event',
-       'Project #', 'County', 'Project Process Step',
-       'Site Inspectors', 'SI Status', 'Work Order #', 'Date Inspected',
-       'Date SI Report Approved', '% Work Complete', 'Imported DDD?',
-       'Has 406 Mitigation?', 'Insured?', 'Approx. Cost', 'CRC Gross Cost',
-       'Total 406 HMP Cost', 'Total Insurance Reductions', 'Federal Share',
-       'Non-Federal Share', 'Labor Type', 'Has EHP Concerns?',
-       '406 Mitigation Cost Type', '406 Mitigation Cost Effectiveness Type',
-       '406 Mitigation BCR', 'EHP Concerns Observed']]
+                   'Cause of Damage', 'Latitude', 'Longitude', 'Event',
+                   'Project #', 'County', 'Project Process Step',
+                   'Site Inspectors', 'SI Status', 'Work Order #', 'Date Inspected',
+                   'Date SI Report Approved', '% Work Complete', 'Imported DDD?',
+                   'Has 406 Mitigation?', 'Insured?', 'Approx. Cost', 'CRC Gross Cost',
+                   'Total 406 HMP Cost', 'Total Insurance Reductions', 'Federal Share',
+                   'Non-Federal Share', 'Labor Type', 'Has EHP Concerns?',
+                   '406 Mitigation Cost Type', '406 Mitigation Cost Effectiveness Type',
+                   '406 Mitigation BCR', 'EHP Concerns Observed']]
 # print(damages.columns)
 
 damages['Disaster'] = damages['Event'].str[:4]
