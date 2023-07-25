@@ -50,113 +50,87 @@ df['Date Inspected'] = df['Date Inspected'].dt.strftime('%Y-%m-%d').fillna('')
 df['Date SI Report Approved'] = pd.to_datetime(df['Date SI Report Approved'], format='%m/%d/%Y %I:%M %p', errors='coerce')
 df['Date SI Report Approved'] = df['Date SI Report Approved'].dt.strftime('%Y-%m-%d').fillna('')
 
+
+data_list = []
 for index, row in df.iterrows():
     # print(row)
-    damage_no = row['Damage #']
-    category = row['Category']
-    name = row['Name']
-    damage_description = row['Damage Description']
-    status = row['Status']
-    cause_of_damage = row['Cause of Damage']
-    latitude = row['Latitude']
-    longitude = row['Longitude']
-    project_no = row['Project #']
-    county = row['County']
-    project_process_step = row['Project Process Step']
-    site_inspectors = row['Site Inspectors']
-    si_status = row['SI Status']
-    work_order_no = row['Work Order #']
-    date_inspected = row['Date Inspected']
-    date_si_report_approved = row['Date SI Report Approved']
-    perc_work_complete = row['% Work Complete']     # need to think about when there is null values.
-    imported_ddd = row['Imported DDD?']
-    has_406_mitigation = row['Has 406 Mitigation?']
-    insured = row['Insured?']
-    approx_cost = row['Approx. Cost']
-    crc_gross_cost = row['CRC Gross Cost']
-    total_406_hmp_cost = row['Total 406 HMP Cost']
-    total_insurance_reductions = row['Total Insurance Reductions']
-    federal_share = row['Federal Share']
-    non_federal_share = row['Non-Federal Share']
-    labor_type = row['Labor Type']                      # need to deal with field type - text multiple choice restriction.
-    has_emp_concerns = row['Has EHP Concerns?']
-    mitigation_406_cost_type = row['406 Mitigation Cost Type']
-    mitigation_406_cost_effectiveness_type = row['406 Mitigation Cost Effectiveness Type']
-    mitigation_406_bcr = row['406 Mitigation BCR']
-    ehp_concerns_observed = row['EHP Concerns Observed']
-    disaster = row['Disaster']
-    related_project_id = row['Related Project ID']
-
-
-    payload = {
-        "to": "btfz6vxv2",
-        "data": [
-            {
-            "26": {"value": damage_no},
-            "31": {"value": category},
-            "9": {"value": name},
-            "19": {"value": damage_description},
-            "92": {"value": status},
-            "34": {"value": cause_of_damage},
-            "17": {"value": latitude},
-            "18": {"value": longitude},
-            "33": {"value": project_no},
-            "107": {"value": county},
-            "113": {"value": project_process_step},
-            "114": {"value": site_inspectors},
-            "115": {"value": si_status},
-            "116": {"value": work_order_no},
-            "117": {"value": date_inspected},    # correct format and are valid choices ???
-            "118": {"value": date_si_report_approved},
-            "22": {"value": perc_work_complete},  # %
-            "119": {"value": imported_ddd},
-            "80": {"value": has_406_mitigation},
-            "37": {"value": insured},
-            "21": {"value": approx_cost},    # currency
-            "81": {"value": crc_gross_cost},  # currency
-            "82": {"value": total_406_hmp_cost},
-            "83": {"value": total_insurance_reductions},
-            "85": {"value": federal_share},  # currency
-            "108": {"value": non_federal_share},  # currency
-            "23": {"value": labor_type},
-            "86": {"value": has_emp_concerns},
-            "87": {"value": mitigation_406_cost_type},
-            "88": {"value": mitigation_406_cost_effectiveness_type},
-            "120": {"value": mitigation_406_bcr},
-            "90": {"value": ehp_concerns_observed},
-            "28": {"value": disaster},
-            "139": {"value": related_project_id}
-            }
-        ]
+    data_dict = {
+        "26": {"value": row['Damage #']},
+        "31": {"value": row['Category']},
+        "9": {"value": row['Name']},
+        "19": {"value": row['Damage Description']},
+        "92": {"value": row['Status']},
+        "34": {"value": row['Cause of Damage']},
+        "17": {"value": row['Latitude']},
+        "18": {"value": row['Longitude']},
+        "33": {"value": row['Project #']},
+        "107": {"value": row['County']},
+        "113": {"value": row['Project Process Step']},
+        "114": {"value": row['Site Inspectors']},
+        "115": {"value": row['SI Status']},
+        "116": {"value": row['Work Order #']},
+        "117": {"value": row['Date Inspected']},  # Format and validation should be done before this step
+        "118": {"value": row['Date SI Report Approved']},  # Format and validation should be done before this step
+        "22": {"value": row['% Work Complete']},  # Format and validation should be done before this step
+        "119": {"value": row['Imported DDD?']},
+        "80": {"value": row['Has 406 Mitigation?']},
+        "37": {"value": row['Insured?']},
+        "21": {"value": row['Approx. Cost']},  # Format and validation should be done before this step
+        "81": {"value": row['CRC Gross Cost']},  # Format and validation should be done before this step
+        "82": {"value": row['Total 406 HMP Cost']},
+        "83": {"value": row['Total Insurance Reductions']},
+        "85": {"value": row['Federal Share']},  # Format and validation should be done before this step
+        "108": {"value": row['Non-Federal Share']},  # Format and validation should be done before this step
+        "23": {"value": row['Labor Type']},
+        "86": {"value": row['Has EHP Concerns?']},
+        "87": {"value": row['406 Mitigation Cost Type']},
+        "88": {"value": row['406 Mitigation Cost Effectiveness Type']},
+        "120": {"value": row['406 Mitigation BCR']},
+        "90": {"value": row['EHP Concerns Observed']},
+        "28": {"value": row['Disaster']},
+        "139": {"value": row['Related Project ID']}
     }
-    # print(payload)
-    try:
-        response = requests.post(url, headers=headers, json=payload)
+    # Append the data_dict to the data_list
+    data_list.append(data_dict)
 
-        payload = json.dumps(payload, indent=2)
+payload = {
+    "to": "btfz6vxv2",   #    brbauvppt
+    "data": data_list
+}
+# print(payload)
 
-        if response.status_code == 200:
-            data = response.json()
-            # print(data)
-            # print('---------')
-            # Process the returned data as needed
-        else:
-            logger.info(f'Error: {response}')
-            logger.info(f'Error: {response.status_code}')
-            logger.info(f'Error: {response.reason}')
-            logger.info(f'Error: {response.text}')
-            logger.info(f'Payload: {payload}')
-            data = response.json()
-            logger.info(data)
-            logger.info('---------------------')
-    except Exception as e:
-        logger.info(e)
-            # print(payload)
+try:
+    response = requests.post(url, headers=headers, json=payload)
+    response.raise_for_status()  # Raise HTTPError if status code is not 2xx
 
+    data = response.json()
+    logger.info(data)
+    # Process the returned data as needed
     logger.info('[OK] Data Import Finished!!')
 
+except requests.exceptions.RequestException as req_ex:  # These errors can occur due to network issues or server unavailability
+    # Handle connection errors or timeout errors
+    logger.error('Error occurred during the request:')
+    logger.exception(req_ex)
 
-    # break
+except requests.exceptions.HTTPError as http_ex:
+    # Handle HTTP errors (status code is not 2xx)
+    logger.error('HTTP Error:')
+    logger.error(http_ex.response.status_code)
+    logger.error(http_ex.response.reason)
+    logger.error(http_ex.response.text)
+    # logger.error(f'Payload: {payload}')
+
+except json.JSONDecodeError as json_ex:   # this might raise a JSONDecodeError if the response is not a valid JSON.
+    # Handle JSON decoding errors
+    logger.error('JSON Decoding Error:')
+    logger.error(response.text)
+
+except Exception as ex:
+    # Catch other unexpected exceptions
+    logger.error('Unexpected Error:')
+    logger.exception(ex)    # log the full traceback, which provides more detailed information about the error.
+    # logger.error(f'Payload: {payload}')
 
 
     ## Damage No.                     26. Text. Key.

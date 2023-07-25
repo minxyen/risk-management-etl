@@ -6,6 +6,7 @@ from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 from datetime import datetime
 
+logger = config_logger()
 
 credentials = UserCredential(ICF_USERNAME, ICF_PASSWORD)
 ctx = ClientContext(SP_SITE_URL).with_credentials(credentials)
@@ -20,3 +21,4 @@ source_file.moveto(f"{SP_FOLDER_URL}/Archive/{formatted_datetime}", 1)  # 1 mean
 # execute a query
 ctx.execute_query()
 
+logger.info("[OK] File has been archived.")
