@@ -113,13 +113,6 @@ except requests.exceptions.RequestException as req_ex:  # These errors can occur
     logger.error('Error occurred during the request:')
     logger.exception(req_ex)
 
-except requests.exceptions.HTTPError as http_ex:
-    # Handle HTTP errors (status code is not 2xx)
-    logger.error('HTTP Error:')
-    logger.error(http_ex.response.status_code)
-    logger.error(http_ex.response.reason)
-    logger.error(http_ex.response.text)
-    # logger.error(f'Payload: {payload}')
 
 except json.JSONDecodeError as json_ex:   # this might raise a JSONDecodeError if the response is not a valid JSON.
     # Handle JSON decoding errors
