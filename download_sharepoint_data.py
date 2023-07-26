@@ -5,7 +5,7 @@ from office365.sharepoint.client_context import ClientContext
 import os
 import fnmatch
 
-logger = config_logger()
+# logger = config_logger()
 
 def download_sharepoint_data(icf_username, icf_password, sp_site_url, sp_folder_url, wildcard_filename, logger):
     try:
@@ -42,12 +42,12 @@ def download_sharepoint_data(icf_username, icf_password, sp_site_url, sp_folder_
         logger.exception(ex)
         return None
 
-output_files = download_sharepoint_data(ICF_USERNAME, ICF_PASSWORD, SP_SITE_URL, SP_FOLDER_URL, WILDCARD_FILENAME, logger)
-
-if output_files:
-    # Process the downloaded files as needed
-    for file_name in output_files:
-        # Your processing logic here...
-        logger.info(f'Processing downloaded file: {file_name}')
-else:
-    logger.error('No files were downloaded.')
+# output_files = download_sharepoint_data(ICF_USERNAME, ICF_PASSWORD, SP_SITE_URL, SP_FOLDER_URL, WILDCARD_FILENAME, logger)
+#
+# if output_files:
+#     # Process the downloaded files as needed
+#     for file_name in output_files:
+#         # Your processing logic here...
+#         logger.info(f'Processing downloaded file: {file_name}')
+# else:
+#     logger.error('No files were downloaded.')
