@@ -1,13 +1,14 @@
 from settings import QB_REALM_HOSTNAME, QB_USER_TOKEN
+from send_outlook_email import send_outlook_email
+
 import requests
 import pandas as pd
 import json
 
-
 # from log import config_logger
 # logger = config_logger()
 
-def import_data(file_name, QB_REALM_HOSTNAME, QB_USER_TOKEN, logger):
+def import_data(file_name, QB_REALM_HOSTNAME, QB_USER_TOKEN, EMAIL_RECIPIENTS, logger):
     headers = {
         'QB-Realm-Hostname': QB_REALM_HOSTNAME,
         'Authorization': f'QB-USER-TOKEN {QB_USER_TOKEN}',
@@ -108,23 +109,31 @@ def import_data(file_name, QB_REALM_HOSTNAME, QB_USER_TOKEN, logger):
         logger.info(data)
         # Process the returned data as needed
         logger.info('[OK] Data Import Finished!!')
+        send_outlook_email(EMAIL_RECIPIENTS, 'Damages Data Import Success',
+                           'The damages data import process has been completed successfully.', logger)
 
     except requests.exceptions.RequestException as req_ex:  # These errors can occur due to network issues or server unavailability
         # Handle connection errors or timeout errors
         logger.error('Error occurred during the request:')
         logger.exception(req_ex)
+        send_outlook_email(EMAIL_RECIPIENTS, 'Damages Data Import Failure',
+                           'The damages data import process encountered an error. Please check the logs for details.', logger)
 
 
     except json.JSONDecodeError as json_ex:   # this might raise a JSONDecodeError if the response is not a valid JSON.
         # Handle JSON decoding errors
         logger.error('JSON Decoding Error:')
         logger.error(response.text)
+        send_outlook_email(EMAIL_RECIPIENTS, 'Damages Data Import Failure',
+                           'The damages data import process encountered an error. Please check the logs for details.', logger)
 
     except Exception as ex:
         # Catch other unexpected exceptions
         logger.error('Unexpected Error:')
         logger.exception(ex)    # log the full traceback, which provides more detailed information about the error.
         # logger.error(f'Payload: {payload}')
+        send_outlook_email(EMAIL_RECIPIENTS, 'Damages Data Import Failure',
+                           'The damages data import process encountered an error. Please check the logs for details.', logger)
 
 
     ## Damage No.                     26. Text. Key.
