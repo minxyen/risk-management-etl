@@ -6,8 +6,8 @@ from log import config_logger
 
 # logger = config_logger()
 
-TABLE_ID = 'bj7f569ni'
-REPORT_ID = '1000116'
+# TABLE_ID = 'bj7f569ni'
+# REPORT_ID = '1000116'
 
 def download_quickbase_report(QB_REALM_HOSTNAME, QB_USER_TOKEN, REPORT_ID, TABLE_ID, logger):
     headers = {
@@ -46,7 +46,7 @@ def download_quickbase_report(QB_REALM_HOSTNAME, QB_USER_TOKEN, REPORT_ID, TABLE
         record_id_report.to_csv('record_id_report.csv', index=False)
 
         logger.info("[Ok] Downloaded Ref ID Report")
-        return record_id_report
+        return True
 
     except requests.exceptions.RequestException as req_ex:
         # Handle connection errors or timeout errors
@@ -62,6 +62,8 @@ def download_quickbase_report(QB_REALM_HOSTNAME, QB_USER_TOKEN, REPORT_ID, TABLE
         # Catch other unexpected exceptions
         logger.error('Unexpected Error:')
         logger.exception(ex)
+
+    return False
 
 
 # record_id_report = download_quickbase_report(QB_REALM_HOSTNAME, QB_USER_TOKEN, REPORT_ID, TABLE_ID, logger)

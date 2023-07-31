@@ -35,12 +35,23 @@ def download_sharepoint_data(icf_username, icf_password, sp_site_url, sp_folder_
             logger.info(f"[OK] File has been downloaded into: {download_path}")
             downloaded_files.append(target_file_name)
 
-        return downloaded_files
+        if downloaded_files:
+            for file_name in downloaded_files:
+                logger.info(f'Processing downloaded file: {file_name}')
+
+        else:
+            logger.error('No files were downloaded.')
+            return False
+
+        return True
 
     except Exception as ex:
         logger.error('An error occurred during file download:')
         logger.exception(ex)
         return None
+
+    return False
+
 
 # output_files = download_sharepoint_data(ICF_USERNAME, ICF_PASSWORD, SP_SITE_URL, SP_FOLDER_URL, WILDCARD_FILENAME, logger)
 #

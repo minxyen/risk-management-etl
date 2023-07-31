@@ -112,6 +112,8 @@ def import_data(file_name, QB_REALM_HOSTNAME, QB_USER_TOKEN, EMAIL_RECIPIENTS, l
         send_outlook_email(EMAIL_RECIPIENTS, 'Damages Data Import Success',
                            'The damages data import process has been completed successfully.', logger)
 
+        return True
+
     except requests.exceptions.RequestException as req_ex:  # These errors can occur due to network issues or server unavailability
         # Handle connection errors or timeout errors
         logger.error('Error occurred during the request:')
@@ -134,6 +136,8 @@ def import_data(file_name, QB_REALM_HOSTNAME, QB_USER_TOKEN, EMAIL_RECIPIENTS, l
         # logger.error(f'Payload: {payload}')
         send_outlook_email(EMAIL_RECIPIENTS, 'Damages Data Import Failure',
                            'The damages data import process encountered an error. Please check the logs for details.', logger)
+
+    return False
 
 
     ## Damage No.                     26. Text. Key.

@@ -11,31 +11,33 @@ from send_outlook_email import send_outlook_email
 from log import config_logger
 logger = config_logger()
 
-
 # Step 1:
-output_files = download_sharepoint_data(ICF_USERNAME, ICF_PASSWORD, SP_SITE_URL, SP_FOLDER_URL, WILDCARD_FILENAME, logger)
-if output_files:
-    # Process the downloaded files as needed
-    for file_name in output_files:
-        # Your processing logic here...
-        logger.info(f'Processing downloaded file: {file_name}')
+download_sharepoint_success = download_sharepoint_data(ICF_USERNAME, ICF_PASSWORD, SP_SITE_URL, SP_FOLDER_URL, WILDCARD_FILENAME, logger)
+if download_sharepoint_success:
+    # Step 2
+    REPORT_ID = '1000116'
+    TABLE_ID = 'bj7f569ni'
+    download_quickbase_report_success = download_quickbase_report(QB_REALM_HOSTNAME, QB_USER_TOKEN, REPORT_ID, TABLE_ID, logger)
+
 else:
-    logger.error('No files were downloaded.')
+    download_quickbase_report_success = False
 
-# Step 2
-REPORT_ID = '1000116'
-TABLE_ID = 'bj7f569ni'
-record_id_report = download_quickbase_report(QB_REALM_HOSTNAME, QB_USER_TOKEN, REPORT_ID, TABLE_ID, logger)
+if download_quickbase_report_success:
+    # Step 3
+    merge_success = merge_data(logger)
+else:
+    merge_success = False
 
-# Step 3
-merged_df = merge_data(logger)
-
-# Step 4
-file_name = 'merged_df.csv'
-import_data(file_name, QB_REALM_HOSTNAME, QB_USER_TOKEN, EMAIL_RECIPIENTS, logger)
+if merge_success:
+    # Step 4
+    file_name = 'merged_df.csv'
+    import_success = import_data(file_name, QB_REALM_HOSTNAME, QB_USER_TOKEN, EMAIL_RECIPIENTS, logger)
+else:
+    import_success = False
 
 # Step 5
-archive_data(ICF_USERNAME, ICF_PASSWORD, SP_SITE_URL, SP_FOLDER_URL, logger)
+if import_success:
+    archive_data(ICF_USERNAME, ICF_PASSWORD, SP_SITE_URL, SP_FOLDER_URL, logger)
 
 # # Step 6
 # recipients = ['minyen.hsieh@icf.com']
