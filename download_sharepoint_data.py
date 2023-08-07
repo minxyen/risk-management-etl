@@ -1,10 +1,11 @@
 from settings import ICF_USERNAME, ICF_PASSWORD, SP_SITE_URL, SP_FOLDER_URL, WILDCARD_FILENAME, LOCAL_DATA_FOLDER
-from log import config_logger
+from send_outlook_email import send_outlook_email
 from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 import os
 import fnmatch
 
+# from log import config_logger
 # logger = config_logger()
 
 def download_sharepoint_data(icf_username, icf_password, sp_site_url, sp_folder_url, wildcard_filename, logger):
@@ -48,6 +49,7 @@ def download_sharepoint_data(icf_username, icf_password, sp_site_url, sp_folder_
     except Exception as ex:
         logger.error('An error occurred during file download:')
         logger.exception(ex)
+
         return None
 
     return False

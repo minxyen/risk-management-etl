@@ -2,6 +2,8 @@ from settings import QB_REALM_HOSTNAME, QB_USER_TOKEN
 import requests
 import pandas as pd
 import json
+from send_outlook_email import send_outlook_email
+
 from log import config_logger
 
 # logger = config_logger()
@@ -52,16 +54,18 @@ def download_quickbase_report(QB_REALM_HOSTNAME, QB_USER_TOKEN, REPORT_ID, TABLE
         # Handle connection errors or timeout errors
         logger.error('Error occurred during the request:')
         logger.exception(req_ex)
+        raise Exception("status code is not 2xx")
 
     except json.JSONDecodeError as json_ex:
         # Handle JSON decoding errors
-        logger.error('JSON Decoding Error:')
+        logger.error('JSON Decoding Error')
         logger.error(response.text)
+        raise Exception("JSON Decoding Error")
 
-    except Exception as ex:
-        # Catch other unexpected exceptions
-        logger.error('Unexpected Error:')
-        logger.exception(ex)
+    # except Exception as ex:
+    #     # Catch other unexpected exceptions
+    #     logger.error('Unexpected Error:')
+    #     logger.exception(ex)
 
     return False
 
