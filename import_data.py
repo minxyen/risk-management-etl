@@ -90,13 +90,13 @@ def import_data(file_name, QB_REALM_HOSTNAME, QB_USER_TOKEN, EMAIL_RECIPIENTS, l
             "120": {"value": row['406 Mitigation BCR']},
             "90": {"value": row['EHP Concerns Observed']},
             "28": {"value": row['Disaster']},
-            "139": {"value": row['Related Project ID']}
+            "6": {"value": row['Related Project ID']}
         }
         # Append the data_dict to the data_list
         data_list.append(data_dict)
 
     payload = {
-        "to": "btfz6vxv2",   #    brbauvppt
+        "to": "brbauvppt",   # damages table: brbauvppt | # test automation: btfz6vxv2
         "data": data_list
     }
     # print(payload)
